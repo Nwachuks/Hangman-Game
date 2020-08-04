@@ -11,7 +11,6 @@ const words = ['application', 'programming', 'interface', 'wizard'];
 
 let selectedWord = words[Math.floor(Math.random() * words.length)];
 
-// const correctLetters = ['w', 'i', 'z', 'a', 'r', 'd'];
 const correctLetters = [];
 const wrongLetters = [];
 
@@ -38,7 +37,25 @@ function showNotification() {
 }
 
 function updateWrongLettersElement() {
-    console.log('Wrong word')
+    // Display wrong letters
+    wrongLettersElement.innerHTML = `${wrongLetters.length > 0 ? '<p>Wrong</p>' : ''}
+    ${wrongLetters.map(letter => `<span>${letter}</span>`)}`;
+
+    // Display parts
+    figureParts.forEach((part, index) => {
+        const errors = wrongLetters.length;
+        if (index < errors) {
+            part.style.display = 'block';
+        } else {
+            part.style.display = 'none';
+        }
+    });
+
+    // Check if lost
+    if (wrongLetters.length === figureParts.length) {
+        finalMessage.innerText = 'Unfortunately you lost!';
+        popup.style.display = 'flex';
+    }
 }
 
 // Keydown letter press
@@ -62,6 +79,18 @@ window.addEventListener('keydown', e => {
             }
         }
     }
-})
+});
+
+// Restart and play again
+playAgainBtn.addEventListener('click', () => {
+    // Empty arrays
+    correctLetters.splice(0);
+    wrongLetters.splice(0);
+
+    selectedWord = words[Math.floor(Math.random() * words.length)];
+    displayWord();
+    updateWrongLettersElement();
+    popup.style.display = 'none';
+});
 
 displayWord();
